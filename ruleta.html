@@ -745,12 +745,11 @@
                     <div class="selector-tema">
                         <h4>🎨 Tema de color</h4>
                         <div class="temas">
-                            <button class="tema-btn activo" style="background: linear-gradient(135deg,#76C9EB,#42A7D1)" onclick="aplicarTema('cielo',this)" title="Azul cielo"></button>
-                            <button class="tema-btn" style="background: linear-gradient(135deg,#002b7a,#004dc9)" onclick="aplicarTema('marino',this)" title="Azul marino"></button>
-                            <button class="tema-btn" style="background: linear-gradient(135deg,#1a5276,#2e86c1)" onclick="aplicarTema('oceano',this)" title="Azul océano"></button>
-                            <button class="tema-btn" style="background: linear-gradient(135deg,#0b5345,#148f77)" onclick="aplicarTema('verde',this)" title="Verde esmeralda"></button>
-                            <button class="tema-btn" style="background: linear-gradient(135deg,#6c3483,#af7ac5)" onclick="aplicarTema('morado',this)" title="Morado"></button>
-                            <button class="tema-btn" style="background: linear-gradient(135deg,#922b21,#e74c3c)" onclick="aplicarTema('vino',this)" title="Vino tinto"></button>
+                            <button class="tema-btn activo" style="background: linear-gradient(135deg,#76C9EB,#42A7D1)" onclick="aplicarTema('cielo',this)" title="Azul cielo claro"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#AADDF2,#76C9EB)" onclick="aplicarTema('pastel',this)" title="Azul pastel"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#22A6E1,#1BA4DA)" onclick="aplicarTema('vibrante',this)" title="Azul vibrante"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#476A93,#5C8DB4)" onclick="aplicarTema('acero',this)" title="Azul acero"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#02062F,#172552)" onclick="aplicarTema('profundo',this)" title="Azul profundo"></button>
                         </div>
                     </div>
                 </div>
@@ -1155,37 +1154,26 @@
                         bg: ["#76C9EB", "#5BB8DE", "#42A7D1"],
                         text: "#002b7a",
                         logoBg: ["#5BB8DE", "#42A7D1"],
-                        ruletaBg: "rgba(255,255,255,0.1)",
                     },
-                    marino: {
-                        bg: ["#002b7a", "#003a9f", "#004dc9"],
-                        text: "white",
-                        logoBg: ["#002b7a", "#003a9f"],
-                        ruletaBg: "rgba(255,255,255,0.1)",
+                    pastel: {
+                        bg: ["#AADDF2", "#92D3F6", "#76C9EB"],
+                        text: "#002b7a",
+                        logoBg: ["#92D3F6", "#76C9EB"],
                     },
-                    oceano: {
-                        bg: ["#1a5276", "#2471a3", "#2e86c1"],
-                        text: "white",
-                        logoBg: ["#1a5276", "#2471a3"],
-                        ruletaBg: "rgba(255,255,255,0.1)",
+                    vibrante: {
+                        bg: ["#22A6E1", "#1BA4DA", "#29A8DB"],
+                        text: "#002b7a",
+                        logoBg: ["#1BA4DA", "#29A8DB"],
                     },
-                    verde: {
-                        bg: ["#0b5345", "#117a65", "#148f77"],
+                    acero: {
+                        bg: ["#476A93", "#5C8DB4", "#63B2D8"],
                         text: "white",
-                        logoBg: ["#0b5345", "#117a65"],
-                        ruletaBg: "rgba(255,255,255,0.1)",
+                        logoBg: ["#476A93", "#5C8DB4"],
                     },
-                    morado: {
-                        bg: ["#6c3483", "#8e44ad", "#af7ac5"],
+                    profundo: {
+                        bg: ["#02062F", "#172552", "#3C4D73"],
                         text: "white",
-                        logoBg: ["#6c3483", "#8e44ad"],
-                        ruletaBg: "rgba(255,255,255,0.1)",
-                    },
-                    vino: {
-                        bg: ["#922b21", "#c0392b", "#e74c3c"],
-                        text: "white",
-                        logoBg: ["#922b21", "#c0392b"],
-                        ruletaBg: "rgba(255,255,255,0.1)",
+                        logoBg: ["#02062F", "#172552"],
                     },
                 };
 
@@ -1200,7 +1188,10 @@
                 document.querySelectorAll(
                     ".ruleta-container, .controles, .premios-container, .lista-participantes",
                 ).forEach((el) => {
-                    el.style.backgroundColor = t.ruletaBg;
+                    el.style.backgroundColor =
+                        tema === "cielo" || tema === "pastel" || tema === "vibrante"
+                            ? "rgba(255,255,255,0.15)"
+                            : "rgba(255,255,255,0.1)";
                 });
                 document.querySelectorAll(
                     ".participante-item",
