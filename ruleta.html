@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ruleta de Sorteos - DEGOAE UNAM</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(
+                    135deg,
+                    #002b7a 0%,
+                    #003a9f 50%,
+                    #004dc9 100%
+                );
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+                color: white;
+            }
+
+            .header {
+                display: flex;
+                align-items: center;
+                gap: 30px;
+                margin-bottom: 20px;
+                padding-left: 20px;
+            }
+
+            .logos-container {
+                display: flex;
+                flex-direction: row;
+                gap: 30px;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 15px 30px;
+                border-radius: 20px;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+                backdrop-filter: blur(10px);
+                align-items: center;
+            }
+
+            .logos-container img {
+                height: 90px;
+                width: auto;
+                filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+                transition: transform 0.3s ease;
+            }
+
+            .logos-container img:hover {
+                transform: scale(1.05);
+            }
+
+            .logo-unam {
+                height: 90px !important;
+            }
+
+            .logo-dgoae {
+                height: 70px !important;
+            }
+
+            .header-texto {
+                flex: 1;
+            }
+
+            .header h1 {
+                font-size: 2.5em;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                margin: 0 0 10px 0;
+                color: #d59f0f;
+            }
+
+            .header h2 {
+                font-size: 1.3em;
+                font-weight: normal;
+                opacity: 0.9;
+            }
+
+            .premios-container {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 20px;
+                border-radius: 15px;
+                margin-bottom: 20px;
+                backdrop-filter: blur(10px);
+            }
+
+            .premios-container h4 {
+                text-align: center;
+                color: #d59f0f;
+                margin-bottom: 15px;
+                font-size: 1.2em;
+            }
+
+            .premio-input-group {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+
+            .premio-input-group input {
+                flex: 1;
+                padding: 10px 15px;
+                border: none;
+                border-radius: 20px;
+                font-size: 0.95em;
+                background: rgba(255, 255, 255, 0.9);
+                color: #002b7a;
+            }
+
+            .premio-input-group input::placeholder {
+                color: #666;
+            }
+
+            .premio-activo {
+                background: rgba(213, 159, 15, 0.3) !important;
+                border: 2px solid #d59f0f !important;
+            }
+
+            .main-container {
+                display: grid;
+                grid-template-columns: 1fr 1.2fr 1fr;
+                gap: 20px;
+                max-width: 1600px;
+                width: 100%;
+                align-items: start;
+            }
+
+            .columna {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .columna-ruleta {
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+
+            .banner-premio {
+                background: linear-gradient(45deg, #d59f0f, #f4b728, #ffd700);
+                color: #002b7a;
+                padding: 15px 40px;
+                border-radius: 25px;
+                font-size: 1.5em;
+                font-weight: bold;
+                text-align: center;
+                margin-bottom: 20px;
+                box-shadow: 0 6px 20px rgba(213, 159, 15, 0.5);
+                animation: pulseBanner 2s infinite;
+                min-width: 80%;
+                min-height: 54px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .banner-premio.visible {
+                visibility: visible;
+                opacity: 1;
+            }
+
+            @keyframes pulseBanner {
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.02);
+                }
+            }
+
+            .columna-izquierda {
+                order: 1;
+            }
+
+            .columna-centro {
+                order: 2;
+            }
+
+            .columna-derecha {
+                order: 3;
+            }
+
+            .btn-repetir {
+                background: rgba(255, 255, 255, 0.3);
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                font-size: 1.2em;
+            }
+
+            .btn-repetir:hover {
+                background: rgba(255, 255, 255, 0.5);
+                transform: rotate(-180deg);
+            }
+
+            .btn-repetir:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            .premio-input-group {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .ruleta-container {
+                position: relative;
+                background: rgba(255, 255, 255, 0.1);
+                padding: 40px;
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+
+            #canvas {
+                border-radius: 50%;
+                box-shadow: 0 0 40px rgba(213, 159, 15, 0.6);
+                max-width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            .flecha {
+                position: absolute;
+                top: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0;
+                height: 0;
+                border-left: 20px solid transparent;
+                border-right: 20px solid transparent;
+                border-top: 40px solid #ff1744;
+                filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+                z-index: 10;
+            }
+
+            .controles {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 25px;
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                min-width: 300px;
+            }
+
+            .controles h3 {
+                text-align: center;
+                margin-bottom: 20px;
+                color: #d59f0f;
+                font-size: 1.5em;
+            }
+
+            .input-group {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            #participanteInput {
+                flex: 1;
+                padding: 12px 15px;
+                border: none;
+                border-radius: 25px;
+                font-size: 1em;
+                outline: none;
+                background: rgba(255, 255, 255, 0.9);
+                color: #002b7a;
+            }
+
+            #participanteInput::placeholder {
+                color: #666;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                border: none;
+                border-radius: 25px;
+                font-size: 1em;
+                font-weight: bold;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+            }
+
+            .btn-agregar {
+                background: #4caf50;
+                color: white;
+            }
+
+            .btn-agregar:hover {
+                background: #43a047;
+                transform: scale(1.05);
+            }
+
+            .btn-girar {
+                width: 100%;
+                padding: 18px;
+                font-size: 1.3em;
+                background: linear-gradient(45deg, #d59f0f, #f4b728, #ffd700);
+                color: #002b7a;
+                margin-bottom: 20px;
+                box-shadow: 0 4px 15px rgba(213, 159, 15, 0.4);
+            }
+
+            .btn-girar:hover {
+                transform: scale(1.05);
+                box-shadow: 0 6px 25px rgba(213, 159, 15, 0.6);
+            }
+
+            .btn-girar:disabled {
+                background: #999;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            .lista-participantes {
+                max-height: 300px;
+                overflow-y: auto;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 15px;
+                padding: 15px;
+            }
+
+            .lista-participantes h4 {
+                text-align: center;
+                margin-bottom: 10px;
+                color: #d59f0f;
+            }
+
+            .participante-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 15px;
+                margin: 5px 0;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+                animation: slideIn 0.3s ease;
+            }
+
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateX(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            .participante-item span {
+                flex: 1;
+            }
+
+            .btn-eliminar {
+                background: #f44336;
+                color: white;
+                border: none;
+                padding: 5px 12px;
+                border-radius: 15px;
+                cursor: pointer;
+                font-size: 0.9em;
+                margin-left: 10px;
+            }
+
+            .btn-eliminar:hover {
+                background: #d32f2f;
+            }
+
+            .btn-limpiar {
+                width: 100%;
+                margin-top: 15px;
+                background: #f44336;
+                color: white;
+            }
+
+            .btn-limpiar:hover {
+                background: #d32f2f;
+            }
+
+            .modal-ganador {
+                display: none;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 90%;
+                height: 90%;
+                background: rgba(0, 0, 0, 0.85);
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                border-radius: 20px;
+            }
+
+            .ruleta-container {
+                position: relative;
+                background: rgba(255, 255, 255, 0.1);
+                padding: 30px;
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
+
+            .modal-contenido {
+                background: linear-gradient(135deg, #002b7a, #001f5c);
+                padding: 50px;
+                border-radius: 30px;
+                text-align: center;
+                box-shadow: 0 0 50px rgba(213, 159, 15, 0.5);
+                animation: popIn 0.5s ease;
+                max-width: 90%;
+            }
+
+            @keyframes popIn {
+                from {
+                    transform: scale(0.5);
+                    opacity: 0;
+                }
+                to {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+            }
+
+            .modal-contenido h2 {
+                font-size: 2em;
+                color: #d59f0f;
+                margin-bottom: 20px;
+            }
+
+            .modal-contenido .ganador-nombre {
+                font-size: 3em;
+                font-weight: bold;
+                color: #4caf50;
+                text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+                margin: 30px 0;
+                animation: pulse 1s infinite;
+            }
+
+            .modal-contenido .premio-ganador {
+                font-size: 1.8em;
+                color: #d59f0f;
+                font-weight: bold;
+                margin-top: 20px;
+                padding: 15px;
+                background: rgba(213, 159, 15, 0.2);
+                border-radius: 15px;
+                border: 2px solid #d59f0f;
+            }
+
+            @keyframes pulse {
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            .modal-contenido .cerrar-modal {
+                background: #d59f0f;
+                color: #002b7a;
+                padding: 15px 40px;
+                border: none;
+                border-radius: 25px;
+                font-size: 1.2em;
+                font-weight: bold;
+                cursor: pointer;
+                margin-top: 20px;
+            }
+
+            .modal-contenido .cerrar-modal:hover {
+                background: #f4b728;
+                transform: scale(1.05);
+            }
+
+            .confeti {
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                top: -10px;
+                z-index: 999;
+                animation: caer 3s linear forwards;
+            }
+
+            @keyframes caer {
+                to {
+                    transform: translateY(100vh) rotate(720deg);
+                    opacity: 0;
+                }
+            }
+
+            .contador {
+                text-align: center;
+                margin-top: 10px;
+                font-size: 0.9em;
+                opacity: 0.8;
+            }
+
+            @media (max-width: 768px) {
+                .header {
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+                .logos-container {
+                    flex-direction: row;
+                    justify-content: center;
+                }
+
+                .logos-container img {
+                    width: 60px;
+                }
+
+                .header h1 {
+                    font-size: 1.8em;
+                }
+
+                .main-container {
+                    grid-template-columns: 1fr;
+                }
+
+                .columna-izquierda,
+                .columna-centro,
+                .columna-derecha {
+                    order: unset;
+                }
+
+                .controles {
+                    width: 100%;
+                    min-width: auto;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <div class="logos-container">
+                <img src="logoUNAM.png" alt="Logo UNAM" class="logo-unam" />
+                <img src="logoDGOAE.png" alt="Logo DEGOAE" class="logo-dgoae" />
+            </div>
+            <div class="header-texto">
+                <h1>🎡 Ruleta de Sorteos</h1>
+                <h2>
+                    Dirección General de Oferta Académica y Evaluación
+                    Institucional
+                </h2>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <!-- Columna Izquierda: Participantes -->
+            <div class="columna columna-izquierda">
+                <div class="controles">
+                    <h3>📝 Participantes</h3>
+
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            id="participanteInput"
+                            placeholder="Nombre del participante"
+                            onkeypress="
+                                if (event.key === 'Enter')
+                                    agregarParticipante();
+                            "
+                        />
+                        <button
+                            class="btn btn-agregar"
+                            onclick="agregarParticipante()"
+                        >
+                            +
+                        </button>
+                    </div>
+
+                    <div class="lista-participantes">
+                        <h4>Lista (<span id="contador">0</span>)</h4>
+                        <div id="listaParticipantes"></div>
+                    </div>
+
+                    <button class="btn btn-limpiar" onclick="limpiarLista()">
+                        🗑️ Limpiar Todo
+                    </button>
+
+                    <div class="contador">
+                        <p>Agrega participantes y gira la ruleta</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Centro: Ruleta -->
+            <div class="columna columna-centro columna-ruleta">
+                <div class="ruleta-container">
+                    <!-- Banner del premio actual -->
+                    <div class="banner-premio" id="bannerPremio">
+                        🎁 <span id="textoBannerPremio"></span>
+                    </div>
+
+                    <div class="flecha"></div>
+                    <canvas id="canvas" width="650" height="650"></canvas>
+
+                    <!-- Modal del ganador - Dentro de la ruleta -->
+                    <div class="modal-ganador" id="modalGanador">
+                        <div class="modal-contenido">
+                            <h2>🎉 ¡FELICIDADES! 🎉</h2>
+                            <p>El ganador es:</p>
+                            <div
+                                class="ganador-nombre"
+                                id="ganadorNombre"
+                            ></div>
+                            <div
+                                class="premio-ganador"
+                                id="premioGanador"
+                            ></div>
+                            <button
+                                class="cerrar-modal"
+                                onclick="cerrarModal()"
+                            >
+                                ¡Excelente!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Premios y Botón -->
+            <div class="columna columna-derecha">
+                <div class="controles">
+                    <h3>🎁 Premios</h3>
+
+                    <div class="premios-container">
+                        <div class="premio-input-group">
+                            <input
+                                type="text"
+                                id="premio1Input"
+                                placeholder="🥇 Premio 1"
+                                class="premio-activo"
+                            />
+                            <button
+                                class="btn-repetir"
+                                onclick="repetirSorteo(1)"
+                                title="Repetir sorteo para este premio"
+                            >
+                                🔄
+                            </button>
+                        </div>
+                        <div class="premio-input-group">
+                            <input
+                                type="text"
+                                id="premio2Input"
+                                placeholder="🥈 Premio 2"
+                            />
+                            <button
+                                class="btn-repetir"
+                                onclick="repetirSorteo(2)"
+                                title="Repetir sorteo para este premio"
+                            >
+                                🔄
+                            </button>
+                        </div>
+                        <div class="premio-input-group">
+                            <input
+                                type="text"
+                                id="premio3Input"
+                                placeholder="🥉 Premio 3"
+                            />
+                            <button
+                                class="btn-repetir"
+                                onclick="repetirSorteo(3)"
+                                title="Repetir sorteo para este premio"
+                            >
+                                🔄
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        class="btn btn-girar"
+                        id="btnGirar"
+                        onclick="girarRuleta()"
+                    >
+                        🎰 ¡GIRAR RULETA!
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+
+            let participantes = [];
+            let girando = false;
+            let anguloActual = 0;
+            let velocidad = 0;
+            let premioActual = 1; // Índice del premio actual (1-based)
+            let totalPremios = 0; // Se calcula dinámicamente según los premios llenos
+
+            const colores = [
+                "#FF6B6B",
+                "#4ECDC4",
+                "#45B7D1",
+                "#96CEB4",
+                "#FFEAA7",
+                "#DDA0DD",
+                "#98D8C8",
+                "#F7DC6F",
+                "#BB8FCE",
+                "#85C1E9",
+                "#F8B500",
+                "#00CED1",
+            ];
+
+            function dibujarRuleta() {
+                const centroX = canvas.width / 2;
+                const centroY = canvas.height / 2;
+                const radio = Math.min(centroX, centroY) - 20;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (participantes.length === 0) {
+                    // Dibujar ruleta vacía
+                    ctx.beginPath();
+                    ctx.arc(centroX, centroY, radio, 0, Math.PI * 2);
+                    ctx.fillStyle = "#666";
+                    ctx.fill();
+                    ctx.strokeStyle = "#D59F0F";
+                    ctx.lineWidth = 5;
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#fff";
+                    ctx.font = "bold 24px Segoe UI";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText("Agrega participantes", centroX, centroY - 20);
+                    ctx.fillText("para comenzar", centroX, centroY + 20);
+                    return;
+                }
+
+                const anguloPorSegmento = (Math.PI * 2) / participantes.length;
+
+                // Dibujar segmentos
+                participantes.forEach((participante, index) => {
+                    const anguloInicio =
+                        anguloActual + index * anguloPorSegmento;
+                    const anguloFin = anguloInicio + anguloPorSegmento;
+
+                    ctx.beginPath();
+                    ctx.moveTo(centroX, centroY);
+                    ctx.arc(centroX, centroY, radio, anguloInicio, anguloFin);
+                    ctx.closePath();
+
+                    ctx.fillStyle = colores[index % colores.length];
+                    ctx.fill();
+                    ctx.strokeStyle = "#fff";
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+
+                    // Dibujar texto
+                    ctx.save();
+                    ctx.translate(centroX, centroY);
+                    ctx.rotate(anguloInicio + anguloPorSegmento / 2);
+                    ctx.textAlign = "right";
+                    ctx.fillStyle = "#000000";
+                    ctx.font = "bold 24px Segoe UI";
+                    // Contorno blanco para mejor visibilidad
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 5;
+                    ctx.lineJoin = "round";
+                    ctx.strokeText(participante.nombre, radio - 30, 5);
+                    ctx.fillText(participante.nombre, radio - 30, 5);
+                    ctx.restore();
+                });
+
+                // Círculo central decorativo
+                ctx.beginPath();
+                ctx.arc(centroX, centroY, 40, 0, Math.PI * 2);
+                ctx.fillStyle = "#D59F0F";
+                ctx.fill();
+                ctx.strokeStyle = "#002B7A";
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                // Estrella central
+                ctx.fillStyle = "#002B7A";
+                ctx.font = "bold 30px Segoe UI";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText("★", centroX, centroY);
+            }
+
+            function actualizarBannerPremio() {
+                const premioActualTexto = obtenerPremioActual();
+                const banner = document.getElementById("bannerPremio");
+                const textoBanner =
+                    document.getElementById("textoBannerPremio");
+
+                if (premioActualTexto && premioActualTexto.trim() !== "") {
+                    textoBanner.textContent = premioActualTexto;
+                    banner.classList.add("visible");
+                    banner.classList.remove("vacio");
+                } else {
+                    // Mantener el banner invisible pero con su espacio
+                    banner.classList.remove("visible");
+                    banner.classList.add("vacio");
+                    textoBanner.textContent = "\u00A0"; // Espacio no rompible para mantener altura
+                }
+
+                // Actualizar botones de repetir para todos los premios
+                actualizarPremiosActivos();
+            }
+
+            function agregarParticipante() {
+                const input = document.getElementById("participanteInput");
+                const nombre = input.value.trim();
+
+                if (nombre === "") {
+                    alert("Por favor ingresa un nombre");
+                    return;
+                }
+
+                participantes.push({ nombre: nombre });
+                input.value = "";
+                input.focus();
+
+                actualizarLista();
+                dibujarRuleta();
+            }
+
+            function eliminarParticipante(index) {
+                if (girando) return;
+                participantes.splice(index, 1);
+                actualizarLista();
+                dibujarRuleta();
+            }
+
+            function actualizarLista() {
+                const lista = document.getElementById("listaParticipantes");
+                const contador = document.getElementById("contador");
+
+                lista.innerHTML = "";
+                participantes.forEach((participante, index) => {
+                    const item = document.createElement("div");
+                    item.className = "participante-item";
+                    item.innerHTML = `
+                    <span>${index + 1}. ${participante.nombre}</span>
+                    <button class="btn-eliminar" onclick="eliminarParticipante(${index})">✕</button>
+                `;
+                    lista.appendChild(item);
+                });
+
+                contador.textContent = participantes.length;
+            }
+
+            function limpiarLista() {
+                if (girando) return;
+                if (participantes.length === 0) return;
+
+                if (
+                    confirm(
+                        "¿Estás seguro de eliminar todos los participantes?",
+                    )
+                ) {
+                    participantes = [];
+                    actualizarLista();
+                    dibujarRuleta();
+                }
+            }
+
+            function girarRuleta() {
+                if (girando || participantes.length === 0) {
+                    if (participantes.length === 0) {
+                        alert("Agrega al menos un participante");
+                    }
+                    return;
+                }
+
+                // Ocultar banner durante el giro
+                document
+                    .getElementById("bannerPremio")
+                    .classList.remove("visible");
+
+                girando = true;
+                document.getElementById("btnGirar").disabled = true;
+
+                // Velocidad inicial aleatoria
+                velocidad = Math.random() * 0.3 + 0.4;
+
+                function animar() {
+                    anguloActual += velocidad;
+                    velocidad *= 0.985; // Fricción
+
+                    dibujarRuleta();
+
+                    if (velocidad > 0.002) {
+                        requestAnimationFrame(animar);
+                    } else {
+                        // Detener ruleta
+                        girando = false;
+                        document.getElementById("btnGirar").disabled = false;
+
+                        // Calcular ganador
+                        const anguloPorSegmento =
+                            (Math.PI * 2) / participantes.length;
+                        // Normalizar ángulo a [0, 2π]
+                        let anguloNormalizado =
+                            (Math.PI * 2 - (anguloActual % (Math.PI * 2))) %
+                            (Math.PI * 2);
+                        // Ajustar porque la flecha está arriba (π/2)
+                        anguloNormalizado =
+                            (anguloNormalizado + Math.PI * 1.5) % (Math.PI * 2);
+
+                        const indexGanador =
+                            Math.floor(anguloNormalizado / anguloPorSegmento) %
+                            participantes.length;
+                        mostrarGanador(participantes[indexGanador].nombre);
+                    }
+                }
+
+                animar();
+            }
+
+            function obtenerPremiosDisponibles() {
+                // Obtiene solo los premios que tienen valor escrito
+                const premios = [];
+                const premio1 = document
+                    .getElementById("premio1Input")
+                    .value.trim();
+                const premio2 = document
+                    .getElementById("premio2Input")
+                    .value.trim();
+                const premio3 = document
+                    .getElementById("premio3Input")
+                    .value.trim();
+
+                if (premio1) premios.push({ numero: 1, texto: premio1 });
+                if (premio2) premios.push({ numero: 2, texto: premio2 });
+                if (premio3) premios.push({ numero: 3, texto: premio3 });
+
+                return premios;
+            }
+
+            function obtenerPremioActual() {
+                const premiosDisponibles = obtenerPremiosDisponibles();
+                if (premiosDisponibles.length === 0) return "";
+                const indicePremio =
+                    (premioActual - 1) % premiosDisponibles.length;
+                return premiosDisponibles[indicePremio].texto;
+            }
+
+            function mostrarGanador(nombre) {
+                const premiosDisponibles = obtenerPremiosDisponibles();
+
+                let premioTexto = "";
+                if (premiosDisponibles.length === 0) {
+                    // No hay premios configurados
+                    premioTexto = "";
+                    document.getElementById("premioGanador").style.display =
+                        "none";
+                } else {
+                    // Calcular qué premio corresponde según el número de giros
+                    const indicePremio =
+                        (premioActual - 1) % premiosDisponibles.length;
+                    premioTexto = premiosDisponibles[indicePremio].texto;
+                    document.getElementById("premioGanador").style.display =
+                        "block";
+                    document.getElementById("premioGanador").textContent =
+                        "🎁 " + premioTexto;
+
+                    // Avanzar al siguiente premio
+                    premioActual =
+                        premioActual >= premiosDisponibles.length
+                            ? 1
+                            : premioActual + 1;
+                }
+
+                document.getElementById("ganadorNombre").textContent = nombre;
+                document.getElementById("modalGanador").style.display = "flex";
+                crearConfeti();
+
+                // Actualizar banner y premios para el próximo giro
+                setTimeout(() => {
+                    actualizarBannerPremio();
+                    actualizarPremiosActivos();
+                }, 1000);
+            }
+
+            function actualizarPremiosActivos() {
+                // Actualizar visualmente qué premio está activo
+                for (let i = 1; i <= 3; i++) {
+                    const input = document.getElementById(
+                        "premio" + i + "Input",
+                    );
+                    const btnRepetir =
+                        input.parentElement.querySelector(".btn-repetir");
+                    const valorPremio = input.value.trim();
+
+                    // Un premio está activo si:
+                    // 1. Es el premio actual en el ciclo
+                    // 2. Tiene un valor escrito
+                    const esActivo = i === premioActual && valorPremio;
+
+                    if (esActivo) {
+                        input.classList.add("premio-activo");
+                        if (btnRepetir) btnRepetir.disabled = false;
+                    } else {
+                        input.classList.remove("premio-activo");
+                        if (btnRepetir) {
+                            // Deshabilitar si no tiene valor o no es el actual
+                            btnRepetir.disabled =
+                                !valorPremio || i !== premioActual;
+                        }
+                    }
+                }
+            }
+
+            function repetirSorteo(numeroPremio) {
+                if (girando || participantes.length === 0) {
+                    alert(
+                        "Espera a que termine el giro actual y asegúrate de tener participantes",
+                    );
+                    return;
+                }
+
+                // Regresar al premio especificado
+                premioActual = numeroPremio;
+                actualizarPremiosActivos();
+                actualizarBannerPremio();
+
+                // Girar automáticamente
+                girarRuleta();
+            }
+
+            function cerrarModal() {
+                document.getElementById("modalGanador").style.display = "none";
+                // Limpiar confeti
+                const ruletaContainer =
+                    document.querySelector(".ruleta-container");
+                ruletaContainer
+                    .querySelectorAll(".confeti")
+                    .forEach((c) => c.remove());
+            }
+
+            function crearConfeti() {
+                const coloresConfeti = [
+                    "#002B7A",
+                    "#D59F0F",
+                    "#FFD700",
+                    "#ffffff",
+                    "#ff0000",
+                    "#00ff00",
+                ];
+
+                const ruletaContainer =
+                    document.querySelector(".ruleta-container");
+
+                for (let i = 0; i < 100; i++) {
+                    setTimeout(() => {
+                        const confeti = document.createElement("div");
+                        confeti.className = "confeti";
+                        confeti.style.left = Math.random() * 100 + "%";
+                        confeti.style.backgroundColor =
+                            coloresConfeti[
+                                Math.floor(
+                                    Math.random() * coloresConfeti.length,
+                                )
+                            ];
+                        confeti.style.animationDuration =
+                            Math.random() * 2 + 2 + "s";
+                        confeti.style.borderRadius =
+                            Math.random() > 0.5 ? "50%" : "0";
+                        confeti.style.position = "absolute";
+                        confeti.style.top = "-10px";
+                        confeti.style.zIndex = "999";
+                        ruletaContainer.appendChild(confeti);
+                    }, i * 30);
+                }
+            }
+
+            // Inicializar
+            dibujarRuleta();
+
+            // Agregar algunos participantes de ejemplo
+            participantes = [
+                { nombre: "María" },
+                { nombre: "Juan" },
+                { nombre: "Carlos" },
+                { nombre: "Ana" },
+                { nombre: "Luis" },
+            ];
+            actualizarLista();
+            dibujarRuleta();
+
+            // Inicializar premios activos
+            actualizarPremiosActivos();
+            actualizarBannerPremio();
+
+            // Escuchar cambios en los premios para actualizar la ruleta
+            ["premio1Input", "premio2Input", "premio3Input"].forEach(
+                (id, index) => {
+                    const input = document.getElementById(id);
+
+                    // Actualizar al escribir
+                    input.addEventListener("input", () => {
+                        dibujarRuleta();
+                        actualizarPremiosActivos();
+                        actualizarBannerPremio();
+                    });
+
+                    // Al enfocar, establecer este premio como el actual
+                    input.addEventListener("focus", () => {
+                        const valorPremio = input.value.trim();
+                        if (valorPremio) {
+                            // Solo cambiar al premio si tiene valor
+                            premioActual = index + 1;
+                            actualizarPremiosActivos();
+                            actualizarBannerPremio();
+                            dibujarRuleta();
+                        }
+                    });
+                },
+            );
+        </script>
+    </body>
+</html>
