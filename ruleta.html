@@ -521,6 +521,43 @@
                 opacity: 0.8;
             }
 
+            .selector-tema {
+                margin-top: 20px;
+                text-align: center;
+            }
+
+            .selector-tema h4 {
+                color: #002b7a;
+                margin-bottom: 10px;
+                font-size: 1em;
+            }
+
+            .temas {
+                display: flex;
+                gap: 10px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .tema-btn {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: 3px solid transparent;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                padding: 0;
+            }
+
+            .tema-btn:hover {
+                transform: scale(1.2);
+            }
+
+            .tema-btn.activo {
+                border-color: #d59f0f;
+                box-shadow: 0 0 12px rgba(213, 159, 15, 0.6);
+            }
+
             @media (max-width: 768px) {
                 .header {
                     flex-direction: column;
@@ -704,6 +741,18 @@
                     >
                         🎰 ¡GIRAR RULETA!
                     </button>
+
+                    <div class="selector-tema">
+                        <h4>🎨 Tema de color</h4>
+                        <div class="temas">
+                            <button class="tema-btn activo" style="background: linear-gradient(135deg,#76C9EB,#42A7D1)" onclick="aplicarTema('cielo',this)" title="Azul cielo"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#002b7a,#004dc9)" onclick="aplicarTema('marino',this)" title="Azul marino"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#1a5276,#2e86c1)" onclick="aplicarTema('oceano',this)" title="Azul océano"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#0b5345,#148f77)" onclick="aplicarTema('verde',this)" title="Verde esmeralda"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#6c3483,#af7ac5)" onclick="aplicarTema('morado',this)" title="Morado"></button>
+                            <button class="tema-btn" style="background: linear-gradient(135deg,#922b21,#e74c3c)" onclick="aplicarTema('vino',this)" title="Vino tinto"></button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1098,6 +1147,75 @@
                         ruletaContainer.appendChild(confeti);
                     }, i * 30);
                 }
+            }
+
+            function aplicarTema(tema, btn) {
+                const temas = {
+                    cielo: {
+                        bg: ["#76C9EB", "#5BB8DE", "#42A7D1"],
+                        text: "#002b7a",
+                        logoBg: ["#5BB8DE", "#42A7D1"],
+                        ruletaBg: "rgba(255,255,255,0.1)",
+                    },
+                    marino: {
+                        bg: ["#002b7a", "#003a9f", "#004dc9"],
+                        text: "white",
+                        logoBg: ["#002b7a", "#003a9f"],
+                        ruletaBg: "rgba(255,255,255,0.1)",
+                    },
+                    oceano: {
+                        bg: ["#1a5276", "#2471a3", "#2e86c1"],
+                        text: "white",
+                        logoBg: ["#1a5276", "#2471a3"],
+                        ruletaBg: "rgba(255,255,255,0.1)",
+                    },
+                    verde: {
+                        bg: ["#0b5345", "#117a65", "#148f77"],
+                        text: "white",
+                        logoBg: ["#0b5345", "#117a65"],
+                        ruletaBg: "rgba(255,255,255,0.1)",
+                    },
+                    morado: {
+                        bg: ["#6c3483", "#8e44ad", "#af7ac5"],
+                        text: "white",
+                        logoBg: ["#6c3483", "#8e44ad"],
+                        ruletaBg: "rgba(255,255,255,0.1)",
+                    },
+                    vino: {
+                        bg: ["#922b21", "#c0392b", "#e74c3c"],
+                        text: "white",
+                        logoBg: ["#922b21", "#c0392b"],
+                        ruletaBg: "rgba(255,255,255,0.1)",
+                    },
+                };
+
+                const t = temas[tema];
+                if (!t) return;
+
+                document.body.style.background = `linear-gradient(135deg, ${t.bg[0]}, ${t.bg[1]}, ${t.bg[2]})`;
+                document.body.style.color = t.text;
+                document.querySelector(
+                    ".logos-container",
+                ).style.background = `linear-gradient(135deg, ${t.logoBg[0]}, ${t.logoBg[1]})`;
+                document.querySelectorAll(
+                    ".ruleta-container, .controles, .premios-container, .lista-participantes",
+                ).forEach((el) => {
+                    el.style.backgroundColor = t.ruletaBg;
+                });
+                document.querySelectorAll(
+                    ".participante-item",
+                ).forEach((el) => {
+                    el.style.background = "rgba(255,255,255,0.2)";
+                });
+                document.querySelector(
+                    ".selector-tema h4",
+                ).style.color = t.text;
+
+                // Marcar botón activo
+                document.querySelectorAll(".tema-btn").forEach((b) => {
+                    b.classList.remove("activo");
+                });
+                if (btn) btn.classList.add("activo");
             }
 
             // Inicializar
